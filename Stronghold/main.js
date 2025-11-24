@@ -1,11 +1,11 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, BrowserView, ipcMain } = require('electron');
 const path = require('node:path');
 
 let window;
 let view;
 
 function createWindow() {
-    const window = new BrowserWindow({
+    window = new BrowserWindow({
         width: 1200,
         height: 800,
         title: 'Stronghold',
@@ -99,7 +99,7 @@ ipcMain.handle('navigate:forward', () => {
 
 ipcMain.handle('navigate:reload', () => {
     if(view && !view.isDestroyed()) {
-        view.webContents.goReload();
+        view.webContents.Reload();
     }
 });
 
