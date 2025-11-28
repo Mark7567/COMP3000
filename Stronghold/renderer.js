@@ -5,6 +5,7 @@ $('back_button').addEventListener('click', () => window.stronghold.back());
 $('forward_button').addEventListener('click', () => window.stronghold.forward());
 $('reload_button').addEventListener('click', () => window.stronghold.reload());
 $('home_button').addEventListener('click', () => window.stronghold.home());
+$('dashboard_button').addEventListener('click', () => window.stronghold.dashboard());
 
 $('navigation').addEventListener('submit', async (e) => {
     e.preventDefault();
