@@ -1,14 +1,3 @@
-/*
-
-            TO DO LIST:
--------------------------------------
-1) Make CSS file for home page
-2) Change URL to add .com if not present 
-3) Implement session only cookies
-4) Create dashboard 
-
-*/
-
 const { app, BrowserWindow, BrowserView, ipcMain } = require('electron');
 const path = require('node:path');
 
@@ -71,8 +60,26 @@ function createWindow() {
 app.whenReady().then(createWindow);
 
 
-// Adds https:// to the beginning of an entered URL if it does not have it 
-function normaliseURL(input) {
+
+/*  Need to make sure that a user can search for something as a query without needing to enter a URL
+    This will also help for when searching for something but forgetting .com or .co.uk etc. at the end of the search
+        (which currently returns nothing as there is no ability to search for non-websites)
+*/
+
+// Checks to see if the input is a URL or not - Determines which out of normaliseURL() and buildSearchQuery() get called
+function isURL(input) {
+    /* 
+    
+        IF input CONTAINS no spaces, full stop, has a valid end (i.e. .com, .org, .co.uk)
+        Utilise encodeURIComponent() to deal with spaces, weird characters and SQL injections
+        
+    */
+}
+
+
+
+// Adds https:// to the beginning of an entered URL if it does not have it (if the input looks like a URL)
+function addHTTPS(input) {
     try {
         if(!/^https?:\/\//i.test(input)) {
             return new URL('https://' + input).toString();
@@ -87,10 +94,23 @@ function normaliseURL(input) {
     }
 }
 
+// Builds a search query if the input does not look like a URL
+function buildSearchQuery(input) {
+
+    /* 
+    
+        Make the search into a valid query
+        https://www.google.copm/search?q= + encodeURIComponent(input)
+        If search contains multiple words, join them using plus signs
+
+    */
+
+}
+
 
 // Search Bar + Navigation Buttons
 ipcMain.handle('navigate:goto', async (_e, raw) => {
-    const url = normaliseURL(raw);
+    const url = addHTTPS(raw);
     if(!url) {
         return {
             okay: false,
