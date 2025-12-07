@@ -100,7 +100,7 @@ function buildSearchQuery(input) {
     /* 
     
         Make the search into a valid query
-        https://www.google.copm/search?q= + encodeURIComponent(input)
+        https://www.google.com/search?q= + encodeURIComponent(input)
         If search contains multiple words, join them using plus signs
 
     */
