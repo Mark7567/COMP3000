@@ -1,1 +1,30 @@
 /* CSS for the taskbar */
+
+#back_button {
+    
+}
+
+#forward_button {
+    
+}
+
+#reload_button {
+
+}
+
+#dashboard_button {
+
+}
+
+#home_button {
+
+}
+
+#navigation {
+    display: flex;
+    justify-content: center;
+}
+
+#url {
+    width: 60%;
+}

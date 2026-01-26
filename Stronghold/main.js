@@ -103,7 +103,23 @@ function buildSearchQuery(input) {
         https://www.google.com/search?q= + encodeURIComponent(input)
         If search contains multiple words, join them using plus signs
 
+        IF input CONTAINS *SPACE* THEN "+" between each space
+        ELSE THEN encodeURIComponent(input)
+
     */
+   
+    length = input.length;
+    for(let i = 0; i < length; i++) {
+        /*
+
+            Loop through the length of the input and check for white space
+            If white space is detected, replace it with a "+"
+            Send the final input through to encodeURIComponent which is then searched in the navigation
+
+        */
+    }
+
+    searchQuery = encodeURIComponent(input);
 
 }
 
@@ -125,14 +141,14 @@ ipcMain.handle('navigate:goto', async (_e, raw) => {
 });
 
 ipcMain.handle('navigate:back', () => {
-    if(view && !view.webContents.isDestroyed() && view.webContents.canGoBack()) {
-        view.webContents.goBack();
+    if(view && !view.webContents.isDestroyed() && view.webContents.navigationHistory.canGoBack()) {
+        view.webContents.navigationHistory.goBack();
     }
 });
 
 ipcMain.handle('navigate:forward', () => {
-    if(view && !view.webContents.isDestroyed() && view.webContents.canGoForward()) {
-        view.webContents.goForward();
+    if(view && !view.webContents.isDestroyed() && view.webContents.navigationHistory.canGoForward()) {
+        view.webContents.navigationHistory.goForward();
     }
 });
 
