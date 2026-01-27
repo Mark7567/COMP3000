@@ -1,0 +1,50 @@
+/* CSS for the taskbar */
+
+#back_button img {
+    width: 30px;
+    height: 30px;
+}
+
+#forward_button img {
+    width: 30px;
+    height: 30px;
+}
+
+#reload_button img {
+    width: 30px;
+    height: 30px;
+}
+
+#dashboard_button img {
+    width: 30px;
+    height: 30px;
+}
+
+#bookmarks_button img {
+    width: 30px;
+    height: 30px;
+}
+
+#settings_button img { 
+    width: 30px;
+    height: 30px;
+}
+
+#home_button img {
+    width: 30px;
+    height: 30px;
+}
+
+#downloads_button img { 
+    width: 30px;
+    height: 30px;
+}
+
+#navigation {
+    display: flex;
+    justify-content: center;
+}
+
+#url {
+    width: 60%;
+}

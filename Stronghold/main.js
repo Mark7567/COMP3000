@@ -20,7 +20,7 @@ function createWindow() {
     });
 
     // Loads the taskbar as a "shell" -> Constantly displays
-    window.loadFile('taskbar.html');
+    window.loadFile('html/taskbar.html');
 
     view = new BrowserView({
         webPreferences: {
@@ -41,7 +41,7 @@ function createWindow() {
     };
     
     layout();
-    view.webContents.loadFile(path.join('home.html'));
+    view.webContents.loadFile(path.join('html/home.html'));
     window.on('resize', layout);
 
     view.webContents.on('did-start-navigation', (_e, url, isInPlace, isMainFrame) => {
@@ -160,7 +160,7 @@ ipcMain.handle('navigate:reload', () => {
 
 ipcMain.handle('navigate:home', () => {
     if(view && !view.webContents.isDestroyed()) {
-        view.webContents.loadFile('home.html');
+        view.webContents.loadFile('html/home.html');
     }
 });
 
@@ -174,7 +174,7 @@ app.on('window-all-closed', () => {
 
 // Dashboard Stuff
 
-/*  Want a button in the top left corner which when clicked opens up a new tab with the dashboard
+/*  Want a button in the top right corner which when clicked opens up a new tab with the dashboard
     Dashboard should show stats about user's safety protection
     Should also show XP points and stuff
     Needs some kind of cosmetic alteration
@@ -187,10 +187,51 @@ function dashboard() {
 }
 
 ipcMain.handle('navigate:dashboard', async (_e) => {
-    const html = 'dashboard.html' 
+    const html = 'html/dashboard.html' 
     await view.webContents.loadFile(html);
     return {
         okay: true,
         html
     }
 })
+
+
+
+// Settings Stuff
+
+function settings() {
+
+}
+
+ipcMain.handle('navigate:settings', async (_e) => {
+    const html = 'html/settings.html'
+    await view.webContents.loadFile(html);
+    return {
+        okay: true,
+        html
+    }
+})
+
+
+
+// Bookmarks Stuff
+
+/* Needs to add the current page to the bookmarks tab and allow the user to edit the name within the bookmarks
+   Should change from empty to filled in when the page has been bookmarked to indicate such
+   Just a pop-up in the top right corner under the taskbar - need to figure out how */
+
+function bookmarks() { 
+
+}
+
+
+
+// Downloads Stuff
+
+/* Needs to display current downloads from the browser
+   Maybe add a time filter to show 1h, 6h, 24h, 3 month etc.
+   Just a pop-up in the top right corner under the taskbar - need to figure out how */
+
+function downloads() {
+
+}
