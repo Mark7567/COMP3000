@@ -60,25 +60,29 @@ function createWindow() {
 app.whenReady().then(createWindow);
 
 
-
-/*  Need to make sure that a user can search for something as a query without needing to enter a URL
-    This will also help for when searching for something but forgetting .com or .co.uk etc. at the end of the search
-        (which currently returns nothing as there is no ability to search for non-websites)
-*/
-
-// Checks to see if the input is a URL or not - Determines which out of normaliseURL() and buildSearchQuery() get called
+// Checks to see if the input is a URL or not
 function isURL(input) {
-    /* 
-    
-        IF input CONTAINS no spaces, full stop, has a valid end (i.e. .com, .org, .co.uk)
-        Utilise encodeURIComponent() to deal with spaces, weird characters and SQL injections
-        
-    */
+    const validEndings = /\.(com|co\.uk|org|net|edu|gov|uk)$/i;
+    const trimmedInput = input.trim();
+
+    if(trimmedInput.includes(" ")) {
+        return false;
+    }
+
+    if(!validEndings.test(trimmedInput)) {
+        return false;
+    }
+
+    if(!trimmedInput.includes('.')) {
+        return false;
+    }
+
+    return true;
 }
 
 
 
-// Adds https:// to the beginning of an entered URL if it does not have it (if the input looks like a URL)
+// Adds https:// to the beginning of an entered URL if it does not have it (if isURL returns true)
 function addHTTPS(input) {
     try {
         if(!/^https?:\/\//i.test(input)) {
@@ -94,50 +98,35 @@ function addHTTPS(input) {
     }
 }
 
-// Builds a search query if the input does not look like a URL
+// Builds a search query if isURL returns false
 function buildSearchQuery(input) {
-
-    /* 
-    
-        Make the search into a valid query
-        https://www.google.com/search?q= + encodeURIComponent(input)
-        If search contains multiple words, join them using plus signs
-
-        IF input CONTAINS *SPACE* THEN "+" between each space
-        ELSE THEN encodeURIComponent(input)
-
-    */
-   
-    length = input.length;
-    for(let i = 0; i < length; i++) {
-        /*
-
-            Loop through the length of the input and check for white space
-            If white space is detected, replace it with a "+"
-            Send the final input through to encodeURIComponent which is then searched in the navigation
-
-        */
-    }
-
-    searchQuery = encodeURIComponent(input);
+    const searchQuery = encodeURIComponent(input.trim());
+    return `https://www.google.com/search?q=${searchQuery}`;
 
 }
 
 
 // Search Bar + Navigation Buttons
 ipcMain.handle('navigate:goto', async (_e, raw) => {
-    const url = addHTTPS(raw);
-    if(!url) {
+    if(isURL(raw)) {    
+        const url = addHTTPS(raw);
+        
+        await view.webContents.loadURL(url);
         return {
-            okay: false,
-            error: 'Invalid URL'
+            okay: true,
+            url
+        };
+    } 
+    
+    else {
+        const search = buildSearchQuery(raw);
+
+        await view.webContents.loadURL(search);
+        return {
+            okay: true,
+            search
         };
     }
-    await view.webContents.loadURL(url);
-    return {
-        okay: true,
-        url
-    };
 });
 
 ipcMain.handle('navigate:back', () => {
@@ -230,8 +219,11 @@ function bookmarks() {
 
 /* Needs to display current downloads from the browser
    Maybe add a time filter to show 1h, 6h, 24h, 3 month etc.
-   Just a pop-up in the top right corner under the taskbar - need to figure out how */
+   Might have it clear after a set time limit which can be changed in settings to promote security
+   Just a pop-up in the top right corner under the taskbar - need to figure out how
+   Add extra features possibly to allow user to open file from clicking in downloads pop-up
+   Open in a pop-up initially then have the option to open in a big screen (maybe show 5 in pop-up and all in big screen?) */
 
 function downloads() {
-
+    
 }
