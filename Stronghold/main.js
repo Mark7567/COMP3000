@@ -2,7 +2,75 @@ const { app, BrowserWindow, BrowserView, ipcMain } = require('electron');
 const path = require('node:path');
 
 let window;
-let view;
+let tabs = [];
+let activeTabTracker = -1;
+
+
+// Layout logic to generate the views
+function layout(view) {
+    if(!window || window.isDestroyed() || !view) {
+        return;
+    }
+        
+    const [width, height] = window.getContentSize();
+    view.setBounds({ x: 0, y: 60, width: width, height: height - 60});
+}
+
+
+// Tab Stuff - Create, Switch and Close
+function createTab() {
+    const newTab = new BrowserView({
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            sandbox: true
+        }
+    });
+
+    newTab.webContents.loadFile(path.join('html/home.html'));
+    tabs.push(newTab);
+    switchTab(tabs.length - 1);
+
+    newTab.webContents.on('did-start-navigation', (_e, url, isInPlace, isMainFrame) => {
+        if(isMainFrame) {
+            window.webContents.send('change-location', url);
+        }
+    });
+
+    newTab.webContents.on('page-title-updated', (_e, title) => {
+        if(window && !window.isDestroyed()) {
+            window.setTitle(`Stronghold - ${title}`);
+        }
+    });
+}
+
+function switchTab(tracker) {
+    if(tracker < 0 || tracker >= tabs.length) {
+        return;
+    }
+
+    if(activeTabTracker !== -1) {
+        window.removeBrowserView(tabs[activeTabTracker]);
+    }
+
+    activeTabTracker = tracker;
+
+    const view = tabs[activeTabTracker];
+    window.setBrowserView(view);
+    layout(view);
+}
+
+function closeTab() {
+
+}
+
+function activeTab() {
+    if(activeTabTracker === -1 || !tabs[activeTabTracker]) {
+        createTab();
+    }
+
+    return tabs[activeTabTracker];
+}
 
 
 // Creates the window which the browser will be displayed in 
@@ -22,37 +90,10 @@ function createWindow() {
     // Loads the taskbar as a "shell" -> Constantly displays
     window.loadFile('html/taskbar.html');
 
-    view = new BrowserView({
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            sandbox: true
-        }
-    });
-
-    window.setBrowserView(view);
-
-    const layout = () => {
-        if(!window || window.isDestroyed() || !view) {
-            return;
-        }
-        const [width, height] = window.getContentSize();
-        view.setBounds({ x: 0, y: 60, width: width, height: height - 60});
-    };
-    
-    layout();
-    view.webContents.loadFile(path.join('html/home.html'));
-    window.on('resize', layout);
-
-    view.webContents.on('did-start-navigation', (_e, url, isInPlace, isMainFrame) => {
-        if(isMainFrame) {
-            window.webContents.send('change-location', url);
-        }
-    });
-
-    view.webContents.on('page-title-updated', (_e, title) => {
-        if(window && !window.isDestroyed()) {
-            window.setTitle(`Stronghold - ${title}`);
+    createTab();
+    window.on('resize', () => {
+        if(activeTabTracker !== -1) {
+            layout(tabs[activeTabTracker]);
         }
     });
 }
@@ -81,7 +122,6 @@ function isURL(input) {
 }
 
 
-
 // Adds https:// to the beginning of an entered URL if it does not have it (if isURL returns true)
 function addHTTPS(input) {
     try {
@@ -98,6 +138,7 @@ function addHTTPS(input) {
     }
 }
 
+
 // Builds a search query if isURL returns false
 function buildSearchQuery(input) {
     const searchQuery = encodeURIComponent(input.trim());
@@ -111,7 +152,7 @@ ipcMain.handle('navigate:goto', async (_e, raw) => {
     if(isURL(raw)) {    
         const url = addHTTPS(raw);
         
-        await view.webContents.loadURL(url);
+        await tabs[activeTabTracker].webContents.loadURL(url);
         return {
             okay: true,
             url
@@ -121,7 +162,7 @@ ipcMain.handle('navigate:goto', async (_e, raw) => {
     else {
         const search = buildSearchQuery(raw);
 
-        await view.webContents.loadURL(search);
+        await tabs[activeTabTracker].webContents.loadURL(search);
         return {
             okay: true,
             search
@@ -130,27 +171,29 @@ ipcMain.handle('navigate:goto', async (_e, raw) => {
 });
 
 ipcMain.handle('navigate:back', () => {
-    if(view && !view.webContents.isDestroyed() && view.webContents.navigationHistory.canGoBack()) {
+    const view = activeTab();
+
+    if(view.webContents.navigationHistory.canGoBack()) { 
         view.webContents.navigationHistory.goBack();
     }
 });
 
 ipcMain.handle('navigate:forward', () => {
-    if(view && !view.webContents.isDestroyed() && view.webContents.navigationHistory.canGoForward()) {
+    const view = activeTab();
+
+    if(view.webContents.navigationHistory.canGoForward()) {
         view.webContents.navigationHistory.goForward();
     }
 });
 
 ipcMain.handle('navigate:reload', () => {
-    if(view && !view.webContents.isDestroyed()) {
-        view.webContents.reload();
-    }
+    const view = activeTab();
+    view.webContents.reload();
 });
 
 ipcMain.handle('navigate:home', () => {
-    if(view && !view.webContents.isDestroyed()) {
-        view.webContents.loadFile('html/home.html');
-    }
+    const view = activeTab();
+    view.webContents.loadFile(path.join('html/home.html'));
 });
 
 app.on('window-all-closed', () => {
@@ -177,7 +220,7 @@ function dashboard() {
 
 ipcMain.handle('navigate:dashboard', async (_e) => {
     const html = 'html/dashboard.html' 
-    await view.webContents.loadFile(html);
+    await tabs[activeTabTracker].webContents.loadFile(html);
     return {
         okay: true,
         html
@@ -194,7 +237,7 @@ function settings() {
 
 ipcMain.handle('navigate:settings', async (_e) => {
     const html = 'html/settings.html'
-    await view.webContents.loadFile(html);
+    await tabs[activeTabTracker].webContents.loadFile(html);
     return {
         okay: true,
         html
