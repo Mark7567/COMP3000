@@ -40,6 +40,11 @@
     height: 30px;
 }
 
+#new_tab_button img {
+    width: 30px;
+    height: 30px;
+}
+
 #navigation {
     display: flex;
     justify-content: center;
@@ -47,4 +52,15 @@
 
 #url {
     width: 60%;
+}
+
+#tabs-holder {
+    display: flex;
+    justify-content: left;
+}
+
+#tabs-holder div {
+    width: 80px;
+    height: 30px;
+    background: black;
 }

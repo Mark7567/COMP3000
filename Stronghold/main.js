@@ -42,6 +42,11 @@ function createTab() {
             window.setTitle(`Stronghold - ${title}`);
         }
     });
+
+    window.webContents.send('tabs:update', {
+        tabNumber: tabs.length,
+        activeTab: activeTabTracker
+    });
 }
 
 function switchTab(tracker) {
@@ -58,6 +63,11 @@ function switchTab(tracker) {
     const view = tabs[activeTabTracker];
     window.setBrowserView(view);
     layout(view);
+
+    window.webContents.send('tabs:update', {
+        tabNumber: tabs.length,
+        activeTab: activeTabTracker
+    });
 }
 
 function closeTab() {
@@ -71,6 +81,10 @@ function activeTab() {
 
     return tabs[activeTabTracker];
 }
+
+ipcMain.handle('tabs:new-tab', () => {
+    createTab();
+});
 
 
 // Creates the window which the browser will be displayed in 
@@ -90,7 +104,10 @@ function createWindow() {
     // Loads the taskbar as a "shell" -> Constantly displays
     window.loadFile('html/taskbar.html');
 
-    createTab();
+    window.webContents.once('did-finish-load', () => {
+        createTab();
+    });
+
     window.on('resize', () => {
         if(activeTabTracker !== -1) {
             layout(tabs[activeTabTracker]);

@@ -7,5 +7,10 @@ contextBridge.exposeInMainWorld('stronghold', {
     reload: () => ipcRenderer.invoke('navigate:reload'),
     home: () => ipcRenderer.invoke('navigate:home'),
     onLocationChange: (cb) => ipcRenderer.on('change-location', (_e, url) => cb(url)),
-    dashboard: () => ipcRenderer.invoke('navigate:dashboard')
+    dashboard: () => ipcRenderer.invoke('navigate:dashboard'),
+    newTab: () => ipcRenderer.invoke('tabs:new-tab'),
+});
+
+ipcRenderer.on('tabs:update', (_e, data) => {
+    window.dispatchEvent(new CustomEvent('updateTabs', {detail: data}));
 });
