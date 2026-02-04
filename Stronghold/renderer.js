@@ -27,13 +27,20 @@ window.stronghold.onLocationChange((url) => {
 
 $('new_tab_button').addEventListener('click', () => window.stronghold.newTab());
 
-function showTabs(tabNumber, activeTab) {
-    const tabHolder = document.getElementById('tabs-holder');
+function showTabs(tabNumber) {
+    const tabHolder = document.getElementById('tabs_holder');
     tabHolder.innerHTML = '';
 
     for(let i = 0; i < tabNumber; i++) {
         const tab = document.createElement('div');
-        tab.addEventListener('click', () => window.stronghold.switchTab(i));
+        
+        tab.dataset.tabNumber = i;
+        tab.addEventListener('click', (e) => {
+            const tabID = Number(e.currentTarget.dataset.tabNumber);
+            window.stronghold.switchTab(tabID);
+        });
+        
+        
         tabHolder.appendChild(tab);
     }
 }

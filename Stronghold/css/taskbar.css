@@ -54,13 +54,28 @@
     width: 60%;
 }
 
-#tabs-holder {
+#tabs {
     display: flex;
-    justify-content: left;
+    align-items: center;
 }
 
-#tabs-holder div {
-    width: 80px;
+#tabs_holder {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+#tabs_holder div {
+    width: 150px;
     height: 30px;
     background: black;
+}
+
+#new_tab_button {
+    margin-left: 4px;
 }

@@ -13,7 +13,7 @@ function layout(view) {
     }
         
     const [width, height] = window.getContentSize();
-    view.setBounds({ x: 0, y: 60, width: width, height: height - 60});
+    view.setBounds({ x: 0, y: 145, width: width, height: height - 145});
 }
 
 
@@ -82,9 +82,8 @@ function activeTab() {
     return tabs[activeTabTracker];
 }
 
-ipcMain.handle('tabs:new-tab', () => {
-    createTab();
-});
+ipcMain.handle('tabs:new-tab', () => createTab());
+ipcMain.handle('tabs:switch-tab', (_e, tabID) => switchTab(tabID));
 
 
 // Creates the window which the browser will be displayed in 
