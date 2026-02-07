@@ -1,6 +1,63 @@
 /* CSS for the home page */
 
-p1 {
-    color: red;
+body {
+    background-color: #D9D9D9;
+}
+
+@font-face {
+    font-family: "Jockey One";
+    src: url("../fonts/Jockey_One/JockeyOne-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+#title {
+    font-family: "Jockey One";
+    font-size: 80px;
+    font-weight: bold;
     text-align: center;
+    margin-top: 200px;
+}
+
+#underline {
+    width: 550px;
+    height: 20px;
+    background: #000000;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -75px;
+}
+
+#search_word {
+    font-family: "Jockey One";
+    font-weight: bold;
+    padding: 15px;
+    font-size: 30px;
+}
+
+#search_input {
+    font-family: "Jockey One";
+    height: 55px;
+    font-size: 30px;
+    width: 100%;
+    margin-top: auto;
+    font-weight: normal;
+}
+
+::placeholder {
+    font-weight: bold;
+    font-style: italic;
+    color: #A29A9A;
+    opacity: 50%;
+}
+
+#search_box {
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    height: 60px;
+    width: 800px;
+    margin-top: 50px;
 }
