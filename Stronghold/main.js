@@ -21,6 +21,7 @@ function layout(view) {
 function createTab() {
     const newTab = new BrowserView({
         webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
             contextIsolation: true,
             sandbox: true
@@ -30,10 +31,29 @@ function createTab() {
     newTab.webContents.loadFile(path.join('html/home.html'));
     tabs.push(newTab);
     switchTab(tabs.length - 1);
+    window.webContents.send('change-location', '');
 
     newTab.webContents.on('did-start-navigation', (_e, url, isInPlace, isMainFrame) => {
         if(isMainFrame) {
-            window.webContents.send('change-location', url);
+            let displayURL = '';
+
+            if(url.includes('home.html')) {
+                displayURL = '';
+            }
+
+            else if(url.includes('dashboard.html')) {
+                displayURL = 'stronghold/dashboard';
+            }
+
+            else if(url.includes('settings.html')) {
+                displayURL = 'stronghold/settings'
+            }
+
+            else {
+                displayURL = url;
+            }
+
+            window.webContents.send('change-location', displayURL);
         }
     });
 
@@ -63,6 +83,23 @@ function switchTab(tracker) {
     const view = tabs[activeTabTracker];
     window.setBrowserView(view);
     layout(view);
+
+    const currentURL = view.webContents.getURL();
+    if(currentURL && currentURL.includes('home.html')) {
+        window.webContents.send('change-location', '');
+    } 
+
+    else if(currentURL.includes('dashboard.html')) {
+        window.webContents.send('change-location', 'stronghold/dashboard');
+    }
+
+    else if(currentURL.includes('settings.html')) {
+        window.webContents.send('change-location', 'stronghold/settings')
+    }
+    
+    else {
+        window.webContents.send('change-location', currentURL);
+    }
 
     window.webContents.send('tabs:update', {
         tabNumber: tabs.length,

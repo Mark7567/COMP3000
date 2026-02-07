@@ -1,31 +1,58 @@
 const $ = (id) => document.getElementById(id);
-const urlInput = $('url');
 
-$('back_button').addEventListener('click', () => window.stronghold.back());
-$('forward_button').addEventListener('click', () => window.stronghold.forward());
-$('reload_button').addEventListener('click', () => window.stronghold.reload());
-$('home_button').addEventListener('click', () => window.stronghold.home());
-$('dashboard_button').addEventListener('click', () => window.stronghold.dashboard());
+const backButton = document.getElementById('back_button');
+if(backButton) {
+    backButton.addEventListener('click', () => window.stronghold.back());
+}
 
-$('navigation').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const val = urlInput.value.trim();
-    const res = await window.stronghold.goto(val); 
+const forwardButton = document.getElementById('forward_button');
+if(forwardButton) {
+    forwardButton.addEventListener('click', () => window.stronghold.forward());
+}
 
-    if(!val) {
-        return;
-    }
+const reloadButton = document.getElementById('reload_button');
+if(reloadButton) {
+    reloadButton.addEventListener('click', () => window.stronghold.reload());
+}
 
-    if(!res?.okay) {
-        alert(res.error || 'Navigation Failure');
-    }
-});
+const homeButton = document.getElementById('home_button');
+if(homeButton) {
+    homeButton.addEventListener('click', () => window.stronghold.home());
+}
+
+const dashboardButton = document.getElementById('dashboard_button');
+if(dashboardButton) {
+    dashboardButton.addEventListener('click', () => window.stronghold.dashboard());
+}
+
+const newTabButton = document.getElementById('new_tab_button');
+if(newTabButton) {
+    newTabButton.addEventListener('click', () => window.stronghold.newTab());
+}
+
+const searchAlgorithm = document.getElementById('navigation');
+if(searchAlgorithm) {
+    searchAlgorithm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const inputVal = e.target.querySelector('input');
+        const val = inputVal.value.trim();
+        const res = await window.stronghold.goto(val);
+
+        if(!val) {
+            return;
+        }
+
+        if(!res?.okay) {
+            alert(res.error || 'Navigation Failure');
+        }
+    });
+}
 
 window.stronghold.onLocationChange((url) => {
     urlInput.value = url || '';
 });
 
-$('new_tab_button').addEventListener('click', () => window.stronghold.newTab());
 
 function showTabs(tabNumber) {
     const tabHolder = document.getElementById('tabs_holder');
@@ -49,3 +76,11 @@ window.addEventListener('updateTabs', (e) => {
     const {tabNumber, activeTab} = e.detail;
     showTabs(tabNumber, activeTab);
 })
+
+const urlInput = document.getElementById('url');
+
+if(urlInput) {
+    window.stronghold.onLocationChange((url) => {
+        urlInput.value = url || '';
+    });
+}
