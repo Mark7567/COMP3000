@@ -8,15 +8,28 @@
     </head>
     
     <body>
-        <div id = "tabs" class = "bar">
-            <div id = "tabs_holder"></div>
+        <!-- Row 1 (Home Button, Tabs Bar, New Tab Button, Dashboard Button) -->
+        <div id = "row_1" class = "bar">
+            <button type = "button" id = "home_button"> 
+                <img src = "../icons/home button.svg">
+            </button>
+            
+            <div id = "tabs_holder">
+
+            </div>
             
             <button type = "button" id = "new_tab_button"> 
                 <img src = "../icons/new tab button.svg">
             </button>
+
+            <button type = "button" id = "dashboard_button"> 
+                <img src = "../icons/dashboard button.svg">
+            </button>
         </div>
 
-        <div class = "bar">
+
+        <!-- Row 2 (Back Button, Forward Button, Reload Button, Search Bar, Bookmarks Button, Downloads Button, Settings Button)-->
+        <div id = "row_2" class = "bar">
             <button type = "button" id = "back_button"> 
                 <img src = "../icons/back button.svg"> 
             </button>
@@ -28,32 +41,30 @@
             <button type = "button" id = "reload_button"> 
                 <img src = "../icons/reload button.svg"> 
             </button>
-
-            <button type = "button" id = "dashboard_button"> 
-                <img src = "../icons/dashboard button.svg">
-            </button>
             
+            <form id = "navigation">
+                <input id = "url" type = "text" placeholder = "Search Here"/>
+            </form>
+
             <button type = "button" id = "bookmarks_button"> 
                 <img src = "../icons/bookmarks button.svg">
-            </button>
-
-            <button type = "button" id = "settings_button" > 
-                <img src = "../icons/settings button.svg">
             </button>
 
             <button type = "button" id = "downloads_button">
                 <img src = "../icons/downloads button.svg">
             </button>
 
-            <button type = "button" id = "home_button"> 
-                <img src = "../icons/home button.svg">
+            <button type = "button" id = "settings_button" > 
+                <img src = "../icons/settings button.svg">
             </button>
-
-            <form id = "navigation">
-                <input id = "url" type = "text" placeholder = "Search Here"/>
-            </form>
-        
         </div>
+
+
+        <!-- Row 3 (Bookmarks Bar)-->
+        <div id = "row_3" class = "bar">
+
+        </div>
+
         <script src = "../renderer.js"></script>
     </body>
 </html>

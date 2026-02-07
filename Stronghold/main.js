@@ -17,7 +17,7 @@ function layout(view) {
 }
 
 
-// Tab Stuff - Create, Switch and Close
+// Tab Stuff
 function createTab() {
     const newTab = new BrowserView({
         webPreferences: {
