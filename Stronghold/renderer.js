@@ -1,5 +1,3 @@
-const $ = (id) => document.getElementById(id);
-
 const backButton = document.getElementById('back_button');
 if(backButton) {
     backButton.addEventListener('click', () => window.stronghold.back());
@@ -28,6 +26,11 @@ if(dashboardButton) {
 const newTabButton = document.getElementById('new_tab_button');
 if(newTabButton) {
     newTabButton.addEventListener('click', () => window.stronghold.newTab());
+}
+
+const settingsButton = document.getElementById('settings_button');
+if(settingsButton) {
+    settingsButton.addEventListener('click', () => window.stronghold.settings());
 }
 
 const searchAlgorithm = document.getElementById('navigation');
